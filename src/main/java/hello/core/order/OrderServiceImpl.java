@@ -1,10 +1,10 @@
 package hello.core.order;
 
 import hello.core.discount.DiscountPolicy;
-import hello.core.discount.FixDiscountPolicy;
-import hello.core.discount.RateDiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
+import hello.core.discount.FixDiscountPolicy;
+import hello.core.discount.RateDiscountPolicy;
 import hello.core.member.MemoryMemberRepository;
 
 /*
@@ -17,10 +17,21 @@ import hello.core.member.MemoryMemberRepository;
  *   > OCP(위반) : 현재 코드 기능을 확장해서 변경하면, 클라이언트 코드 (OrderServiceImpl) 에 영향을 준다.
  */
 
-public class OrderServiceImpl implements OrderService {
-    private final MemberRepository memberRepository = new MemoryMemberRepository();
+//    PLUS : DIP 규칙 미준수 | 구체화 객체 의존.
 //    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
-    private DiscountPolicy discountPolicy;
+//    private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
+
+public class OrderServiceImpl implements OrderService {
+//  REFACTOR : DIP 규칙 준수 | 추상화 객체 의존.
+//      >  OrderServiceImpl 은 생성자를 통해 어떤 구현 객체가 들어올지(주입될지) 할 수 없음.
+//      >  OrderServiceImpl 의 생성자를 통해 어떤 구현 객체를 주압힐지는 AppConfig 에서 결정함.
+    private final MemberRepository memberRepository;
+    private final DiscountPolicy discountPolicy;
+
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {
