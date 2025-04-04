@@ -6,6 +6,8 @@ import hello.core.member.MemberRepository;
 import hello.core.discount.FixDiscountPolicy;
 import hello.core.discount.RateDiscountPolicy;
 import hello.core.member.MemoryMemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /*
  * CHECK POINT
@@ -21,6 +23,7 @@ import hello.core.member.MemoryMemberRepository;
 //    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
 //    private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
 
+@Component
 public class OrderServiceImpl implements OrderService {
 //  REFACTOR : [DIP 준수] | 추상화 객체 의존.
 //      >  OrderServiceImpl 은 생성자를 통해 어떤 구현 객체가 들어올지(주입될지) 할 수 없음.
@@ -28,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
 
+    @Autowired
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
@@ -39,5 +43,11 @@ public class OrderServiceImpl implements OrderService {
         int discountPrice = discountPolicy.discount(member, itemPrice);
 
         return new Order(memberId, itemName, itemPrice, discountPrice);
+    }
+
+
+//  테스트 용도
+    public MemberRepository getMemberRepository() {
+        return memberRepository;
     }
 }

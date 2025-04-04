@@ -39,8 +39,22 @@ public class AppConfig {
       > 구현체 변경 시, memoryRepository 함수 내부만 변경하면 됨.
       > 역할과 구현 클래스의 분리로 한 눈에 확인 가능.
 */
+
+//  Q : 이렇게 되면 각각 다른 두개의 MemoryMemberRepository 가 생성될텐데
+//      싱글톤 패턴이 꺠지는 것이 아닌가?
+//  @Bean memberService -> new MemoryMemberRepository()
+//  @Bean orderService -> new MemoryMemberRepository()
+//  A : @Configuration 을 사용하면 스프링 빈이 싱글톤이 되도록 보장해줌. (AppConfig@CGLIB)
+//        > @Bean 이 붙은 메서드마다 이미 스프링 빈이 존재하면 존재하는 빈을 반환.
+//        > 스프링 빈이 없으면 생성해서 스프링 빈을 등록하고 반환하는 코드가 동적으로 만들어짐.
+
+//   Q : @Configuration 을 붙이지않으면?
+//   A : 동작은 되는데 싱글톤 패턴이 깨짐. (즉, 스프링 컨테이너가 관리하지않음. 그냥 자바 코드 실행하는 격.)
+//     | new MemoryMemberRepository() 반복 생성.
+
     @Bean
     public MemberRepository memberRepository() {
+        System.out.println("call AppConfig.memberRepository");
         return new MemoryMemberRepository();
     }
 
@@ -53,6 +67,7 @@ public class AppConfig {
 
     @Bean
     public MemberService memberService(){
+        System.out.println("call AppConfig.memberService");
         return new MemberServiceImpl(
                 memberRepository()
         );
@@ -60,6 +75,7 @@ public class AppConfig {
 
     @Bean
     public OrderService orderService(){
+        System.out.println("call AppConfig.orderService");
         return new OrderServiceImpl(
                 memberRepository(),
                 discountPolicy()
