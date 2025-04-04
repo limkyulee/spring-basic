@@ -2,13 +2,15 @@ package hello.core;
 
 import hello.core.discount.DiscountPolicy;
 import hello.core.discount.FixDiscountPolicy;
-import hello.core.discount.RateDiscountPolicy;
 import hello.core.member.MemberRepository;
 import hello.core.member.MemberService;
 import hello.core.member.MemberServiceImpl;
 import hello.core.member.MemoryMemberRepository;
 import hello.core.order.OrderService;
 import hello.core.order.OrderServiceImpl;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import hello.core.discount.RateDiscountPolicy;
 
 /*
     FIXME : AppConfig [Dependency Injection (의존 관계 주입)]
@@ -18,6 +20,7 @@ import hello.core.order.OrderServiceImpl;
         > OrderApp 과 같은 client 코드의 변경을 필요로하지않음.
 */
 
+@Configuration
 public class AppConfig {
 /*
     BEFORE REFACTOR : 구현체 바로 주입(연결).
@@ -36,22 +39,26 @@ public class AppConfig {
       > 구현체 변경 시, memoryRepository 함수 내부만 변경하면 됨.
       > 역할과 구현 클래스의 분리로 한 눈에 확인 가능.
 */
-    private static MemberRepository memberRepository() {
+    @Bean
+    public MemberRepository memberRepository() {
         return new MemoryMemberRepository();
     }
 
 //  PLUS : 할인 정책 변경 시, 해당 코드만 변경하면 됨. [OCP 원칙 준수]
-    private static DiscountPolicy discountPolicy() {
+    @Bean
+    public DiscountPolicy discountPolicy() {
         return new FixDiscountPolicy();
 //        return new RateDiscountPolicy();
     }
 
+    @Bean
     public MemberService memberService(){
         return new MemberServiceImpl(
                 memberRepository()
         );
     }
 
+    @Bean
     public OrderService orderService(){
         return new OrderServiceImpl(
                 memberRepository(),

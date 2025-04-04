@@ -17,12 +17,12 @@ import hello.core.member.MemoryMemberRepository;
  *   > OCP(위반) : 현재 코드 기능을 확장해서 변경하면, 클라이언트 코드 (OrderServiceImpl) 에 영향을 준다.
  */
 
-//    PLUS : DIP 규칙 미준수 | 구체화 객체 의존.
+//    PLUS : [DIP 위반] | 구체화 객체 의존.
 //    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
 //    private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
 
 public class OrderServiceImpl implements OrderService {
-//  REFACTOR : DIP 규칙 준수 | 추상화 객체 의존.
+//  REFACTOR : [DIP 준수] | 추상화 객체 의존.
 //      >  OrderServiceImpl 은 생성자를 통해 어떤 구현 객체가 들어올지(주입될지) 할 수 없음.
 //      >  OrderServiceImpl 의 생성자를 통해 어떤 구현 객체를 주압힐지는 AppConfig 에서 결정함.
     private final MemberRepository memberRepository;
