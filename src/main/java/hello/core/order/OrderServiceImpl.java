@@ -28,6 +28,37 @@ public class OrderServiceImpl implements OrderService {
 //  REFACTOR : [DIP 준수] | 추상화 객체 의존.
 //      >  OrderServiceImpl 은 생성자를 통해 어떤 구현 객체가 들어올지(주입될지) 할 수 없음.
 //      >  OrderServiceImpl 의 생성자를 통해 어떤 구현 객체를 주압힐지는 AppConfig 에서 결정함.
+
+//  FIXME : 필드 주입.
+//    > Field injection is not recommended. | 사용을 권장하지않음.
+//    > 코드는 간결하지만 외부에서 변경이 불가해서 테스트하기 힘듬.
+//    > 외부에서 값을 변결하려면 setter 를 만들어서 사용해야함. (이렇게 되면, setter 주입하는게 나음)
+
+//    @Autowired private  MemberRepository memberRepository;
+//    @Autowired private  DiscountPolicy discountPolicy;
+
+//  FIXME : 수정자 주입(setter 주입).
+//    > setter 라 불리는 필드의 값을 변경하는 수정자 메서드를 통해 의존관계 주입.
+//    > 선택, 변경 가능성이 있는 의존관계에 사용.
+//    > 선택적으로 사용하기 위해서는 (required=false) 사용하면 됨.
+
+//    private MemberRepository memberRepository;
+//    private DiscountPolicy discountPolicy;
+//
+//    @Autowired
+//    public void setMemberRepository(MemberRepository memberRepository) {
+//        this.memberRepository = memberRepository;
+//    }
+//
+//    @Autowired
+//    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
+//        this.discountPolicy = discountPolicy;
+//    }
+
+//  FIXME : 생성자 주입.
+//    > 생성자를 통해서 의존관계 주입.
+//    > 불변, 필수 의존관계에 사용.
+
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
 
@@ -45,9 +76,19 @@ public class OrderServiceImpl implements OrderService {
         return new Order(memberId, itemName, itemPrice, discountPrice);
     }
 
-
 //  테스트 용도
     public MemberRepository getMemberRepository() {
         return memberRepository;
     }
+
+
+//  FIXME : 일반 메서드 주입.
+//    > 스프링 컨데이터가 관리하는 스프링 빈일 때, 일반 메서드를 통해서 주입 반을 수 있음.
+//    > 일반적으로 잘 사용하진않음.
+
+//    @Autowired
+//    public void init(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+//        this.memberRepository = memberRepository;
+//        this.discountPolicy = discountPolicy;
+//    }
 }
