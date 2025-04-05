@@ -1,12 +1,15 @@
 package hello.core.order;
 
+import hello.core.annotation.MainDiscountPolicy;
 import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
 import hello.core.discount.FixDiscountPolicy;
 import hello.core.discount.RateDiscountPolicy;
 import hello.core.member.MemoryMemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /*
@@ -23,7 +26,11 @@ import org.springframework.stereotype.Component;
 //    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
 //    private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
 
+//    PLUS : @RequiredArgsConstructor
+//      > final 이 붙은 필드를 모아서 생성자를 자동으로 만들어줌.
+//      > 생성자를 따로 만들어줄 필요 없음.
 @Component
+//@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 //  REFACTOR : [DIP 준수] | 추상화 객체 의존.
 //      >  OrderServiceImpl 은 생성자를 통해 어떤 구현 객체가 들어올지(주입될지) 할 수 없음.
@@ -59,11 +66,19 @@ public class OrderServiceImpl implements OrderService {
 //    > 생성자를 통해서 의존관계 주입.
 //    > 불변, 필수 의존관계에 사용.
 
+/*
+* 조회 대상 빈이 2개이상일 때 해결 방법
+* @Autowired 필드 명 매칭
+* @Qualifier(추가 구분자) -> @Qualifier 끼리 매칭 -> 빈 이름 매칭
+* @Primary(우선순위 지정)
+*/
+
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
 
+
     @Autowired
-    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+    public OrderServiceImpl(MemberRepository memberRepository, @MainDiscountPolicy DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
     }
