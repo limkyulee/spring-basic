@@ -1,4 +1,4 @@
-# Study Spring Basic
+# Learning Spring Basics
 스프링 기본 핵심 원리 학습
 
 ### Learning Contents
